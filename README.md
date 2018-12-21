@@ -25,7 +25,7 @@ class Num
 {
 public:
 
-        Num(int m):max_(m){};
+        Num(uint32_t m):max_(m){};
 
         //模拟某种复杂计算
         uint64_t summary()
