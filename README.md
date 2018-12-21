@@ -68,31 +68,25 @@ int main()
 
         //正常执行的任务
         pool->add_task(hello);
+
         //延时任务
         pool->delay_task(1000, [](){delay(0);});
 
         //future任务，等待返回值
         auto return_future = std::move(pool->add_future_task(std::mem_fn(&Num::summary), &n));
 
-
         //lambda表达式
         pool->add_task([](){lambda(999);});
 
         //等待future的执行结果，注意如果函数有异常，会在get()函数中抛出，这是C++11的标准决定的
-        g_log_mutex.lock();
         std::cout<<LogPrefix()<<"Waiting for summary future task..."<<std::endl;
-        g_log_mutex.unlock();
         uint64_t sum_val = return_future.get();
-        g_log_mutex.lock();
         std::cout<<LogPrefix()<<"Summary result: "<<sum_val<<std::endl;
-        g_log_mutex.unlock();
 
         sleep(3);
 
         //销毁线程池
-        g_log_mutex.lock();
         std::cout<<LogPrefix()<<"Destroying thread pool..."<<std::endl;
-        g_log_mutex.unlock();
 
         //等待所有[定时任务以外]的线程完成
         pool->stop();
